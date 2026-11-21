@@ -1,6 +1,10 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import { Navbar } from "@/components/navbar";
+import { Footer } from "@/components/footer";
+import { ToastContainer } from "react-toastify";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -23,7 +27,25 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col">
+        {/* Navbar reads usePathname(); Suspense lets dynamic routes stream it in */}
+        <Suspense
+          fallback={
+            <div
+              aria-hidden="true"
+              className="h-14 w-full border-b border-black/5 bg-white"
+            />
+          }
+        >
+          <Navbar />
+        </Suspense>
+        {children}
+        <Footer />
+        <ToastContainer
+          position="top-right"
+          autoClose={3000}
+        />
+      </body>
     </html>
   );
 }
